@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Using a Printer – Superstar Adventure</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#3a2490;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1c1050}}
+:root[data-theme="dark"]{--bg:#1c1050}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;margin:0}
+body{background:var(--bg);font-family:Fredoka,"Trebuchet MS",sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;overflow:hidden}
+#stage{position:relative;width:min(calc(100vw - 12px),calc((100vh - 70px)*16/9));aspect-ratio:16/9;container-type:size;overflow:hidden;border-radius:16px;background:linear-gradient(#6fd0ff,#c9f1ff 62%,#8fe28f 62%,#6fcf6f);box-shadow:0 8px 30px #0006}
+#sc{position:absolute;inset:0}
+.cloud{position:absolute;font-size:7cqw;opacity:.9;animation:drift 20s ease-in-out infinite alternate}
+.sub{position:absolute;left:4cqw;right:4cqw;bottom:2.2cqw;background:rgba(40,20,110,.92);color:#fff;font-size:3.2cqw;border-radius:2cqw;padding:.9cqw 2cqw;text-align:center;z-index:15;opacity:0;transition:opacity .3s;font-weight:500}
+.sub.on{opacity:1}
+.pc{position:absolute;width:36cqw}
+.mon{background:#2f80ff;border-radius:2.4cqw;padding:1.6cqw 1.6cqw 0;box-shadow:0 1cqw 0 #1c5fd0}
+.scr{background:#fff;border-radius:1cqw;height:18cqw;overflow:hidden;position:relative}
+.chin{height:7cqw;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6cqw}
+.eyes{display:flex;gap:2.4cqw}
+.eye{display:block;width:1.8cqw;height:2.3cqw;background:#fff;border-radius:50%;position:relative;animation:blink 4s infinite}
+.eye:after{content:"";position:absolute;width:.9cqw;height:1cqw;background:#2b1b6b;border-radius:50%;left:.45cqw;top:.8cqw}
+.mouth{display:block;width:3cqw;height:1cqw;border-radius:0 0 3cqw 3cqw;background:#ff4f87}
+.neck{width:5cqw;height:3cqw;background:#1c5fd0;margin:0 auto}
+.base{width:14cqw;height:1.6cqw;background:#1c5fd0;border-radius:1cqw;margin:0 auto}
+.pr{position:absolute;width:26cqw}
+.tray{width:16cqw;height:8cqw;background:#fff;margin:0 auto -1cqw;border-radius:1cqw 1cqw 0 0;border:.4cqw solid #e6dcff;box-sizing:border-box;position:relative;z-index:0}
+.body{background:#a45bff;border-radius:2.4cqw;height:13cqw;position:relative;box-shadow:0 1cqw 0 #7a33d6;z-index:1}
+.face{position:absolute;top:2cqw;left:0;right:0;display:flex;justify-content:center;gap:2.8cqw}
+.pr .eye{width:2.3cqw;height:2.9cqw}
+.pr .eye:after{width:1.1cqw;height:1.2cqw;top:1cqw;left:.6cqw}
+.pr .mouth{position:absolute;left:50%;top:6.4cqw;transform:translateX(-50%);width:3.4cqw}
+.led{position:absolute;right:2cqw;top:1.5cqw;width:1.3cqw;height:1.3cqw;border-radius:50%;background:#8f8}
+.slot{position:absolute;bottom:1.6cqw;left:10%;right:10%;height:1.4cqw;background:#3b1a7a;border-radius:1cqw}
+.out{position:absolute;left:50%;top:17.4cqw;width:15cqw;height:0;overflow:hidden;transform:translateX(-50%);background:#fff;border-radius:0 0 .6cqw .6cqw;font-size:6cqw;transition:height 2.6s linear;z-index:0;box-shadow:0 .6cqw 1cqw #0003}
+.pr.go .out{height:13cqw}
+.pr.go .body{animation:shake .15s infinite}
+.pr.go .led{background:#ff4;animation:blink .3s infinite}
+.pic{width:100%;height:100%;background:linear-gradient(#7fd4ff,#d6f6ff 60%,#8ee08e 60%);display:flex;align-items:center;justify-content:center;font-size:inherit;box-sizing:border-box}
+#stage[data-who=c] .pc .mouth{animation:talk .25s infinite alternate}
+#stage[data-who=p] .pr .mouth{animation:talk .25s infinite alternate}
+.ttl{position:absolute;left:50%;top:1.5cqw;transform:translateX(-50%);font-size:5cqw;font-weight:700;color:#fff;background:linear-gradient(90deg,#ff4f87,#ff9d1a,#ffd600);padding:.4cqw 3cqw;border-radius:4cqw;white-space:nowrap;box-shadow:0 .6cqw 0 #c0245a;text-shadow:0 .3cqw 0 #0003}
+.badge{position:absolute;left:3cqw;top:1.6cqw;width:8cqw;height:8cqw;border-radius:50%;color:#fff;font-size:5.6cqw;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 .6cqw 0 #0003;animation:pop .5s both,bob 1.4s .5s infinite}
+.ttl2{position:absolute;left:13cqw;top:2.6cqw;font-size:4.2cqw;font-weight:700;color:#2b1b6b;background:#fff;padding:.5cqw 2.4cqw;border-radius:3cqw;box-shadow:0 .5cqw 0 #0003}
+.win{position:absolute;left:4cqw;top:12cqw;width:62cqw;height:33cqw;background:#fff;border-radius:1.4cqw;border:.5cqw solid #2f80ff;box-shadow:0 1cqw 2cqw #0004;overflow:hidden;font-size:2.2cqw;color:#2b1b6b}
+.tb{height:3.6cqw;background:#2f80ff;color:#fff;font-size:2cqw;padding-left:1.4cqw;display:flex;align-items:center}
+.desk{position:absolute;inset:3.6cqw 0 0;background:linear-gradient(135deg,#ffe3f1,#e0ecff)}
+.ic{position:absolute;width:13cqw;text-align:center;font-size:2.2cqw;padding:.6cqw;border-radius:1cqw}
+.ic i{display:block;font-size:6cqw;font-style:normal}
+.glow{outline:.5cqw solid #ffd600;animation:glow 1s infinite}
+.cur{position:absolute;font-size:4.5cqw;transition:left 1.3s ease,top 1.3s ease;z-index:9;filter:drop-shadow(0 .3cqw .2cqw #0005)}
+.cur.clk{transform:scale(.7)}
+.menu{position:absolute;top:3.6cqw;left:0;right:0;height:3.4cqw;background:#eef2ff;display:flex;gap:1cqw;padding-left:1cqw;align-items:center;font-size:2.1cqw}
+.menu b{padding:.2cqw 1.4cqw;border-radius:.6cqw;font-weight:500}
+.dd{position:absolute;top:7cqw;left:1cqw;width:14cqw;background:#fff;border:.3cqw solid #b9c6ff;border-radius:.8cqw;box-shadow:0 .8cqw 1.2cqw #0003;z-index:5;display:none}
+.dd div{height:3.4cqw;line-height:3.4cqw;padding-left:1.4cqw}
+.doc{position:absolute;left:30cqw;top:10cqw;width:20cqw;height:20cqw;font-size:10cqw}
+.row{position:absolute;left:4cqw;width:38cqw;height:4.6cqw;line-height:4.6cqw;border-radius:1cqw;background:#f0f2ff;padding-left:1.6cqw;box-sizing:border-box}
+.row.sel{background:#8df08d;font-weight:700}
+.pv{position:absolute;width:11cqw;height:11cqw;font-size:5cqw;border-radius:.8cqw;overflow:hidden;box-shadow:0 .5cqw .8cqw #0004;border:.3cqw solid #fff}
+.num{position:absolute;left:12cqw;top:24cqw;width:8cqw;height:5cqw;border:.4cqw solid #2f80ff;border-radius:1cqw;text-align:center;font-size:3.6cqw;line-height:5cqw;font-weight:700}
+.btn{position:absolute;border-radius:2cqw;font-weight:700;color:#fff;text-align:center}
+.tag{position:absolute;font-size:3.2cqw;font-weight:700;color:#fff;padding:.4cqw 2cqw;border-radius:3cqw;box-shadow:0 .5cqw 0 #0003}
+.fly{position:absolute;width:9cqw;height:9cqw;font-size:5cqw;transition:left 1.6s ease-in,top 1.6s cubic-bezier(.3,-.6,.6,1),transform 1.6s,opacity 1.6s;z-index:8;border-radius:1cqw;overflow:hidden;border:.3cqw solid #fff}
+.tiles{position:absolute;inset:0;display:grid;grid-template-columns:repeat(3,1fr);gap:1cqw;padding:1cqw;font-size:5cqw}
+.tiles div{border-radius:1cqw;display:flex;align-items:center;justify-content:center;animation:bob 1.6s infinite}
+.card{position:absolute;top:13cqw;width:17cqw;height:27cqw;border-radius:2cqw;color:#fff;text-align:center;box-shadow:0 .8cqw 0 #0003;font-size:2.7cqw;font-weight:700;padding:1cqw}
+.card i{display:block;font-style:normal;font-size:8cqw;margin:1cqw 0}
+.card u{display:block;text-decoration:none;font-size:5cqw}
+.qh{position:absolute;left:3cqw;top:2cqw;font-size:3.4cqw;font-weight:700;color:#fff;background:#ff4f87;border-radius:3cqw;padding:.4cqw 2.4cqw}
+.qc{position:absolute;left:8cqw;right:8cqw;top:9cqw;background:#fff;color:#2b1b6b;border-radius:2.4cqw;font-size:3.8cqw;font-weight:700;text-align:center;padding:1.6cqw;box-shadow:0 .8cqw 0 #0003}
+.opts{position:absolute;left:5cqw;right:5cqw;top:22cqw;display:flex;gap:2.4cqw}
+.opt{flex:1;height:21cqw;border-radius:2.4cqw;color:#fff;text-align:center;font-size:3cqw;font-weight:700;box-shadow:0 .8cqw 0 #0003;transition:all .4s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6cqw;padding:.6cqw;box-sizing:border-box}
+.opt b{font-size:3.4cqw;background:#fff;color:#2b1b6b;border-radius:50%;width:5cqw;height:5cqw;line-height:5cqw}
+.opt span{font-size:6.5cqw}
+.o0{background:#2f80ff}.o1{background:#ff7a1a}.o2{background:#a45bff}
+.opt.lit{transform:scale(1.08)}
+.opt.no{opacity:.25;transform:scale(.9)}
+.opt.yes{background:#22c55e;transform:scale(1.14);animation:glow 1s infinite}
+.timer{position:absolute;right:3cqw;top:1.6cqw;width:6cqw;height:6cqw;border-radius:50%;background:#ffd600;color:#2b1b6b;font-size:4cqw;font-weight:700;display:flex;align-items:center;justify-content:center;box-shadow:0 .5cqw 0 #0003}
+.cf{position:absolute;top:-4cqw;font-size:3cqw;animation:fall linear forwards;z-index:20;pointer-events:none}
+#start{position:absolute;inset:0;z-index:30;background:linear-gradient(#6fd0ff,#ffd6f0);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqw}
+#start h1{margin:0;font-size:7cqw;color:#2b1b6b;text-align:center}
+#start button{font:700 4cqw Fredoka,sans-serif;border:0;border-radius:4cqw;padding:1.2cqw 5cqw;background:#ff4f87;color:#fff;box-shadow:0 .8cqw 0 #c0245a;cursor:pointer}
+#start p{margin:0;font-size:2.6cqw;color:#2b1b6b}
+#bar{display:flex;gap:8px;align-items:center}
+#bar button{font:700 16px Fredoka,sans-serif;border:0;border-radius:12px;padding:8px 14px;background:#ffd600;color:#2b1b6b;cursor:pointer}
+#bar button:focus-visible{outline:3px solid #fff}
+#dots{display:flex;gap:5px}
+#dots i{width:10px;height:10px;border-radius:50%;background:#ffffff55}
+#dots i.on{background:#fff}
+@keyframes pop{0%{transform:scale(0)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+.pop{animation:pop .5s both}
+.ttl.pop,.ttl2.pop{animation:popx .5s both}
+@keyframes popx{0%{opacity:0}100%{opacity:1}}
+@keyframes bob{50%{transform:translateY(-1cqw)}}
+.bob{animation:bob 1.2s infinite}
+@keyframes jump{0%{transform:translateY(-60cqw) rotate(-25deg)}60%{transform:translateY(2cqw)}80%{transform:translateY(-2cqw)}100%{transform:none}}
+.jump{animation:jump 1s both}
+.hide{opacity:0}
+@keyframes fall{to{transform:translateY(70cqw) rotate(720deg)}}
+@keyframes drift{to{transform:translateX(14cqw)}}
+@keyframes talk{to{height:2.2cqw}}
+@keyframes blink{0%,92%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes glow{50%{box-shadow:0 0 0 1.4cqw rgba(255,214,0,.6)}}
+@keyframes shake{25%{transform:translateX(-.3cqw)}75%{transform:translateX(.3cqw)}}
+@keyframes wave{50%{transform:rotate(8deg)}}
+.wave{animation:wave .5s 4}
+#stage.frozen *{animation-play-state:paused!important}
+</style></head>
+<body>
+<div id="stage" data-who="n">
+<div class="cloud" style="top:2cqw;left:2cqw">☁️</div><div class="cloud" style="top:12cqw;left:60cqw;animation-delay:-8s">☁️</div>
+<div id="sc"></div><div id="sub" class="sub"></div>
+<div id="start"><h1>🖨️ Using a Printer!<br>The Superstar Adventure</h1><button id="go">▶ Start</button><p>Turn the sound on and press Start. Press F for full screen.</p></div>
+</div>
+<div id="bar"><button id="prev" aria-label="Previous scene">⏮</button><button id="stop" aria-label="Stop" style="background:#ff4f4f;color:#fff">⏹ Stop</button><button id="rep" aria-label="Replay scene">↻</button><button id="next" aria-label="Next scene">⏭</button><div id="dots"></div><button id="vo" aria-label="Voice">🗣️</button><button id="mu" aria-label="Music">🎵</button></div>
+<script>
+const stage=document.getElementById('stage'),sc=document.getElementById('sc'),sub=document.getElementById('sub');
+const $=s=>sc.querySelector(s),syn=window.speechSynthesis;
+let AC,tok=0,cur=0,started=false,mus=true,vo=true,voice,stopped=false;
+const ac=()=>AC=AC||new(window.AudioContext||window.webkitAudioContext)();
+function tone(f,d=.15,ty='sine',v=.15,w=0){try{const a=ac(),o=a.createOscillator(),g=a.createGain(),t=a.currentTime+w;o.type=ty;o.frequency.value=f;g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g).connect(a.destination);o.start(t);o.stop(t+d)}catch(e){}}
+const sfx={click:()=>tone(900,.05,'square',.1),pop:()=>tone(520,.12,'sine',.2),tick:()=>tone(700,.06,'triangle',.15),
+ding:()=>[784,988,1175,1568].forEach((f,i)=>tone(f,.25,'triangle',.2,i*.09)),
+whoosh:()=>{for(let i=0;i<9;i++)tone(300+i*120,.08,'sine',.08,i*.05)},
+print:()=>{for(let i=0;i<15;i++)tone(110+(i%3)*45,.13,'sawtooth',.07,i*.17)}};
+const notes=[523,587,659,784,880,784,659,587];let ni=0;
+setInterval(()=>{if(started&&mus&&!stopped)tone(notes[ni++%8]*(ni%16<8?1:.75),.28,'triangle',.035)},320);
+function pick(){const v=syn.getVoices().filter(x=>/^en/i.test(x.lang));voice=v.find(x=>/Samantha|Google US|Jenny|Aria|Zira|Female/i.test(x.name))||v[0]}
+if(syn){pick();syn.onvoiceschanged=pick}
+function say(t,who){return new Promise(res=>{sub.textContent=t;sub.classList.add('on');stage.dataset.who=who||'n';var to;
+const done=()=>{clearTimeout(to);stage.dataset.who='n';res()};
+if(!vo||!syn){to=setTimeout(done,t.length*80+700);return}
+const u=new SpeechSynthesisUtterance(t);u.rate=.78;u.pitch=1.25;if(voice)u.voice=voice;u.onend=done;u.onerror=done;
+to=setTimeout(done,t.length*150+3500);syn.speak(u)})}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+function confetti(n=60){const c=['#ff4f87','#ffd600','#2f80ff','#22c55e','#a45bff','#ff7a1a'];for(let i=0;i<n;i++){const d=document.createElement('div');d.className='cf';d.textContent=i%3?'':'⭐';d.style.cssText=`left:${Math.random()*100}cqw;animation-duration:${2+Math.random()*2}s;animation-delay:${Math.random()*.6}s;${i%3?`width:1.2cqw;height:2cqw;background:${c[i%6]}`:''}`;stage.appendChild(d);setTimeout(()=>d.remove(),4800)}}
+const PC=(st,scr,cl='')=>`<div class="pc ${cl}" style="${st}"><div class="mon"><div class="scr">${scr}</div><div class="chin"><div class="eyes"><i class="eye"></i><i class="eye"></i></div><i class="mouth"></i></div></div><div class="neck"></div><div class="base"></div></div>`;
+const PR=(st,cl='')=>`<div class="pr ${cl}" style="${st}"><div class="tray"></div><div class="body"><div class="face"><i class="eye"></i><i class="eye"></i></div><i class="mouth"></i><b class="led"></b><b class="slot"></b></div><div class="out"><div class="pic">🦄</div></div></div>`;
+const STEP=(n,t,c)=>`<div class="badge" style="background:${c}">${n}</div><div class="ttl2 pop">${t}</div>`;
+const WIN=(t,b)=>`<div class="win pop"><div class="tb">${t}</div>${b}<div class="cur" style="left:55cqw;top:28cqw">☝️</div></div>`;
+const mv=(x,y)=>{const c=$('.cur');c.style.left=x+'cqw';c.style.top=y+'cqw'};
+const clk=()=>{sfx.click();const c=$('.cur');c.classList.add('clk');setTimeout(()=>c.classList.remove('clk'),250)};
+const show=(s,d='block')=>{const e=$(s);e.style.display=d;e.classList.add('pop');sfx.pop()};
+
+const SC=[
+async(S,W)=>{
+ sc.innerHTML=`<div class="ttl pop">🖨️ Using a Printer!</div>`+PC('left:6cqw;top:11cqw','<div class="tiles"><div style="background:#ffd6e8">🌈</div><div style="background:#d6e8ff;animation-delay:.2s">📄</div><div style="background:#d9ffd6;animation-delay:.4s">🐶</div><div style="background:#fff0c2;animation-delay:.6s">🚀</div><div style="background:#efd6ff;animation-delay:.8s">📝</div><div style="background:#ffe0cc;animation-delay:1s">🌸</div></div>')+PR('right:8cqw;top:14cqw','hide');
+ $('.pc').classList.add('wave');
+ await S('Hello, Superstars! Today we’re going to learn something exciting!','c');
+ const p=$('.pr');p.classList.remove('hide');p.classList.add('jump');sfx.whoosh();await W(1100);p.style.animation='wave .5s 4';
+ await S('Hi! I am Penny the printer!','p');
+ sc.insertAdjacentHTML('beforeend','<div class="tag pop" style="left:38cqw;top:8cqw;background:#ff4f87;font-size:7cqw">❓</div>');sfx.pop();
+ await S('What if we want to hold our pictures in our hands? What can we use?','c');await W(900)},
+
+async(S,W)=>{
+ sc.innerHTML=`<div class="ttl pop">What is a printer?</div>`+PC('left:5cqw;top:12cqw','<div class="tiles" id="tl"><div style="background:#ffd6e8">🌈</div><div style="background:#d6e8ff">📄</div><div style="background:#d9ffd6">🐶</div><div style="background:#fff0c2">🚀</div><div style="background:#efd6ff">📝</div><div style="background:#ffe0cc">🌸</div></div><div class="pic" id="one" style="display:none;font-size:9cqw">🦄</div>')+PR('right:8cqw;top:15cqw');
+ await S('Look! Our computer has many pictures and documents inside.','c');
+ $('#tl').style.display='none';show('#one','flex');
+ await S('Watch this magic!','c');
+ sc.insertAdjacentHTML('beforeend','<div class="fly" id="fl" style="left:17cqw;top:20cqw"><div class="pic">🦄</div></div>');
+ await W(50);sfx.whoosh();const f=$('#fl');f.style.left='74cqw';f.style.top='12cqw';f.style.transform='scale(.3) rotate(360deg)';f.style.opacity='.2';await W(1700);
+ $('.pr').classList.add('go');sfx.print();await W(300);
+ await S('A printer is a machine that prints pictures and documents from a computer onto paper.','p');
+ sc.insertAdjacentHTML('beforeend','<div class="tag pop" style="left:8cqw;top:6.5cqw;background:#2f80ff">Digital copy 💻</div><div class="tag pop" style="left:63cqw;top:7.5cqw;background:#22a35a">Printed copy 📄</div>');sfx.ding();
+ await S('The digital copy is on the screen. The printed copy is on real paper.','n');await W(900)},
+
+async(S,W)=>{
+ sc.innerHTML=STEP(1,'Open your file','#ff7a1a')+WIN('Desktop','<div class="desk"><div class="ic" style="left:5cqw;top:5cqw"><i>📄</i>Homework</div><div class="ic" id="tg" style="left:25cqw;top:5cqw"><i>🖼️</i>My Picture</div><div class="ic" style="left:45cqw;top:5cqw"><i>🎵</i>Song</div></div><div id="op" style="display:none;position:absolute;inset:3.6cqw 0 0;background:#fff"><div class="doc"><div class="pic">🦄</div></div><div style="position:absolute;left:4cqw;top:4cqw;font-size:3cqw;font-weight:700">My Picture</div></div>')+PR('right:5cqw;top:15cqw');
+ mv(28,11);await S('First, open the file you want to print.','n');
+ clk();await W(300);clk();$('#tg').classList.add('glow');await W(300);show('#op');
+ await S('Click, click! The file is open!','c');await W(700)},
+
+async(S,W)=>{
+ sc.innerHTML=STEP(2,'Click File, then Print','#ff4f87')+WIN('My Picture','<div class="menu"><b id="fm">File</b><b>Edit</b><b>View</b></div><div class="doc" style="top:12cqw"><div class="pic">🦄</div></div><div class="dd" id="dd"><div>New</div><div>Open</div><div>Save</div><div id="pi" style="font-weight:700">🖨️ Print</div></div>')+PR('right:5cqw;top:15cqw');
+ mv(4,5);await S('Next, click File...','n');
+ clk();$('#fm').classList.add('glow');await W(200);show('#dd');
+ mv(7,18.6);await S('...then click Print.','n');
+ $('#pi').classList.add('glow');await W(300);clk();$('#pi').style.background='#8df08d';await W(900)},
+
+async(S,W)=>{
+ sc.innerHTML=STEP(3,'Choose your printer','#a45bff')+WIN('Print','<div style="position:absolute;left:4cqw;top:5cqw;font-weight:700">Select Printer</div><div class="row" style="top:9cqw">📠 Microsoft Print to PDF</div><div class="row" id="hp" style="top:14.4cqw">🖨️ HP Smart Tank 510 series</div><div class="row" style="top:19.8cqw">📠 Fax</div><div class="pv" style="left:47cqw;top:9cqw"><div class="pic">🦄</div></div>')+PR('right:5cqw;top:15cqw');
+ mv(18,16.2);await S('Now, choose your printer.','n');
+ clk();$('#hp').classList.add('sel');$('#hp').textContent='✅ HP Smart Tank 510 series';sfx.ding();
+ await S('This is an example. Your printer may have a different name.','p');await W(700)},
+
+async(S,W)=>{
+ sc.innerHTML=STEP(4,'Choose the number of copies','#22c55e')+WIN('Print','<div style="position:absolute;left:4cqw;top:6cqw;font-weight:700;font-size:3cqw">Copies:</div><div class="num" id="nm">1</div><div class="btn" id="up" style="left:21cqw;top:24cqw;width:5cqw;height:5cqw;background:#2f80ff;font-size:3cqw;line-height:5cqw;border-radius:1cqw">▲</div><div class="pv" id="c1" style="left:34cqw;top:8cqw"><div class="pic">🦄</div></div><div class="pv" id="c2" style="left:47cqw;top:8cqw;display:none"><div class="pic">🦄</div></div>')+PR('right:5cqw;top:15cqw');
+ await S('Choose how many copies you need.','n');
+ await S('Copies means how many times we print the same file.','p');
+ mv(20,25);await W(1400);clk();$('#nm').textContent='2';sfx.ding();show('#c2');
+ await S('One copy... two copies! Two pictures that look the same!','c');await W(700)},
+
+async(S,W)=>{
+ sc.innerHTML=STEP(5,'Click Print!','#2f80ff')+WIN('Print','<div style="position:absolute;left:8cqw;top:6cqw;font-size:3cqw;font-weight:700">Everything is ready! 🎉</div><div class="btn glow" id="pb" style="left:12cqw;top:14cqw;width:30cqw;height:10cqw;font-size:5.5cqw;line-height:10cqw;background:linear-gradient(90deg,#ff4f87,#ff9d1a);box-shadow:0 .8cqw 0 #c0245a">🖨️ PRINT</div><div class="btn" style="left:44cqw;top:17cqw;width:14cqw;height:5cqw;font-size:2.4cqw;line-height:5cqw;background:#9aa3c7">Cancel</div>')+PR('right:5cqw;top:15cqw');
+ mv(24,17);await S('Finally, click Print or OK.','n');
+ clk();$('#pb').style.transform='scale(.92)';await W(300);
+ $('.pr').classList.add('go');sfx.print();$('.pr').style.animation='bob .4s 6';
+ await S('Brrr, brrr! Here comes the paper!','p');await W(1400);confetti();sfx.ding();
+ await S('Great job!','c');await W(800)},
+
+async(S,W)=>{
+ const it=[['📂','Open your file.','#2f80ff'],['📋','Click File.','#ff4f87'],['🖨️','Choose your printer.','#a45bff'],['🔢','Select the number of copies.','#22c55e'],['✅','Click Print!','#ff7a1a']];
+ sc.innerHTML='<div class="ttl pop">Quick recap</div>'+it.map((x,i)=>`<div class="card hide" id="k${i}" style="left:${3+i*19}cqw;background:${x[2]}"><u>${i+1}</u><i>${x[0]}</i>${x[1]}</div>`).join('');
+ for(let i=0;i<5;i++){const k=$('#k'+i);k.classList.remove('hide');k.classList.add('pop');sfx.pop();await S(`Number ${i+1}. ${it[i][1]}`,i%2?'p':'c')}
+ confetti(30);await S('Now you know how to print!','c');await W(700)},
+
+...[['Which machine prints documents and pictures onto paper?',['Keyboard','Printer','Mouse'],1,['⌨️','🖨️','🖱️'],'Printer! Yes!'],
+['What should we do first before printing?',['Open the file','Turn off the computer','Close the file'],0,['📂','🔌','🚪'],'Open the file! Yes!'],
+['Which button do we click at the end?',['Delete','Cancel','Print'],2,['🗑️','🚫','🖨️'],'Print! Yes!']].map((q,n)=>async(S,W)=>{
+ sc.innerHTML=`<div class="qh">Question ${n+1} of 3</div><div class="qc pop">${q[0]}</div><div class="opts">${q[1].map((o,i)=>`<div class="opt o${i}" id="o${i}"><b>${'ABC'[i]}</b><span>${q[3][i]}</span>${o}</div>`).join('')}</div><div class="timer" id="tm">?</div>`;
+ await S(q[0],'c');
+ for(let i=0;i<3;i++){$('#o'+i).classList.add('lit');await S(`${'ABC'[i]}. ${q[1][i]}`,'c');$('#o'+i).classList.remove('lit')}
+ await S('Think, think, think!','p');
+ for(let k=5;k>0;k--){$('#tm').textContent=k;sfx.tick();await W(1000)}
+ $('#tm').textContent='🎉';
+ for(let i=0;i<3;i++)$('#o'+i).classList.add(i===q[2]?'yes':'no');
+ sfx.ding();confetti();await S(q[4],'c');sc.insertAdjacentHTML('beforeend','<div class="tag pop" style="left:34cqw;top:46cqw;background:#ff4f87;font-size:4cqw;z-index:16">⭐ Great job! ⭐</div>');await W(1300)}),
+
+async(S,W)=>{
+ sc.innerHTML='<div class="ttl pop">You are Printing Superstars! ⭐</div>'+PC('left:8cqw;top:13cqw','<div class="pic" style="font-size:10cqw">🏆</div>','bob')+PR('right:10cqw;top:15cqw','bob');
+ confetti(90);sfx.ding();await S('Hooray! You are printing superstars!','c');confetti(60);await S('See you next time!','p');await W(1200)}
+];
+const dots=document.getElementById('dots');SC.forEach(()=>dots.appendChild(document.createElement('i')));
+function go(i){
+ i=Math.max(0,Math.min(SC.length-1,i));cur=i;const T=++tok;stopped=false;stage.classList.remove('frozen');document.getElementById('stop').textContent='⏹ Stop';if(syn)syn.cancel();
+ stage.querySelectorAll('.cf').forEach(e=>e.remove());sub.classList.remove('on');
+ [...dots.children].forEach((d,j)=>d.classList.toggle('on',j===i));
+ const S=async(t,w)=>{await say(t,w);if(T!==tok)throw 'stop'},W=async m=>{await wait(m);if(T!==tok)throw 'stop'};
+ SC[i](S,W).then(()=>{if(T===tok&&i<SC.length-1)go(i+1);else if(T===tok)sub.classList.remove('on')}).catch(e=>{if(e!=='stop')console.error(e)})}
+document.getElementById('go').onclick=()=>{started=true;document.getElementById('start').remove();try{ac().resume()}catch(e){};go(0)};
+function toggleStop(){if(!started)return;if(!stopped){stopped=true;tok++;if(syn)syn.cancel();stage.dataset.who='n';sub.classList.remove('on');stage.querySelectorAll('.cf').forEach(e=>e.remove());stage.classList.add('frozen');document.getElementById('stop').textContent='▶ Continue'}else go(cur)}
+document.getElementById('stop').onclick=toggleStop;
+document.getElementById('prev').onclick=()=>started&&go(cur-1);
+document.getElementById('next').onclick=()=>started&&go(cur+1);
+document.getElementById('rep').onclick=()=>started&&go(cur);
+document.getElementById('vo').onclick=e=>{vo=!vo;e.target.style.opacity=vo?1:.4;if(!vo&&syn)syn.cancel()};
+document.getElementById('mu').onclick=e=>{mus=!mus;e.target.style.opacity=mus?1:.4};
+addEventListener('keydown',e=>{if(e.key==='f'||e.key==='F')(document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()).catch(()=>{});if(e.key===' '){e.preventDefault();toggleStop()}if(e.key==='ArrowRight')document.getElementById('next').click();if(e.key==='ArrowLeft')document.getElementById('prev').click()});
+</script></body></html>
